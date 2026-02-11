@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Mom ❤️</title>
+    <style>
+        :root {
+            --primary-red: #d32f2f;
+            --soft-pink: #ffdae0;
+            --deep-pink: #ff8fa3;
+            --text-grey: #4a4a4a;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fff5f6 0%, #ffffff 50%, #ffdae0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: manipulation; /* Prevents double-tap zoom delay */
+        }
+
+        /* --- Welcome Page --- */
+        #welcome-page {
+            position: absolute;
+            z-index: 100;
+            text-align: center;
+            transition: opacity 0.8s;
+            padding: 20px;
+        }
+
+        h2 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
+
+        #start-btn {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+            transition: transform 0.2s;
+        }
+
+        #start-btn:active { transform: scale(0.95); }
+
+        /* --- Main Birthday Page --- */
+        #main-page {
+            display: none;
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            opacity: 0;
+            transition: opacity 0.8s;
+        }
+
+        h1 { font-size: clamp(1.8rem, 6vw, 3rem); margin-bottom: 5px; }
+        p { font-size: clamp(1rem, 4vw, 1.2rem); }
+
+        .character {
+            position: relative; /* Changed for better mobile placement */
+            margin-top: 20px;
+            font-size: clamp(40px, 10vw, 70px);
+            opacity: 0;
+        }
+
+        /* Heart Grid */
+        .heart-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin: 10px 0; 
+            transform: scale(0.8); /* Scale down for smaller screens */
+        }
+        @media (min-width: 600px) { .heart-container { transform: scale(1); } }
+        
+        .row { display: flex; }
+        .mini-heart { color: var(--primary-red); font-size: 18px; margin: 1px; opacity: 0; transform: scale(0); }
+
+        /* --- Final Message Page --- */
+        #final-page {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.05);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .paper {
+            background: #fffdf0;
+            padding: clamp(20px, 5vw, 40px);
+            width: 85%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            border: 1px solid #eee;
+            transform: scale(0);
+            text-align: center;
+            line-height: 1.6;
+            color: #333;
+            font-style: italic;
+            border-radius: 10px;
+        }
+
+        .burn-in { animation: burnEffect 2s forwards; }
+
+        @keyframes burnEffect {
+            0% { transform: scale(0.8); opacity: 0; filter: sepia(1) contrast(2) brightness(0.5); }
+            100% { transform: scale(1); opacity: 1; filter: sepia(0) contrast(1) brightness(1); }
+        }
+
+        #next-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 50%;
+            transform: translateX(50%); /* Centered for easier thumb access on mobile */
+            background: white;
+            border: 2px solid var(--soft-pink);
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: none;
+            font-weight: bold;
+            color: var(--primary-red);
+            z-index: 150;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (min-width: 600px) {
+            #next-btn { right: 30px; transform: none; }
+        }
+
+        .pop-heart {
+            position: absolute;
+            color: var(--deep-pink);
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes heartIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: scale(1.5) translateY(-100px); opacity: 0; }
+        }
+
+        /* Confetti Piece */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            z-index: 300;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="welcome-page">
+        <h2 style="color: var(--text-grey);">This Is For You Amma</h2>
+        <button id="start-btn" onclick="startSurprise()">ARE U READY!</button>
+    </div>
+
+    <div id="main-page">
+        <h1 style="color: var(--primary-red);">HAPPY BIRTHDAY SUKKAMMA</h1>
+        <p style="color: var(--text-grey);">I love you so much</p>
+        <div class="heart-container" id="heartGrid"></div>
+        <div class="character" id="doodle">( •‿•)づ</div>
+        <button id="next-btn" onclick="showFinalMessage()">Next →</button>
+    </div>
+
+    <div id="final-page" onclick="createConfetti(event)">
+        <div class="paper" id="paper">
+            <h3 style="color: var(--primary-red);">HAPPY BIRTHDAY SUKKAMMA😘</h3>
+            <p>"Thank you Amma ... Nammude Familikum Enikum Veendi Chytha Elathinum Ini Ennum Agne Ayirikum Ennum Enik Urapan And I am lucky to Have Such a Mother😚, I am Proud Of U Very Much, Always Stay Happy Dear Sukkama....🤍 Love You Soo Much😘"</p>
+            <p style="font-size: 0.8rem; opacity: 0.6;">(Tap anywhere for more magic! ✨)</p>
+        </div>
+    </div>
+
+    <script>
+        function startSurprise() {
+            document.getElementById('welcome-page').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('welcome-page').style.display = 'none';
+                const main = document.getElementById('main-page');
+                main.style.display = 'block';
+                setTimeout(() => { main.style.opacity = '1'; }, 50);
+                
+                buildHeart();
+                document.getElementById('doodle').style.opacity = '1';
+                document.getElementById('doodle').style.transition = 'all 1s 2s';
+                
+                setTimeout(() => { document.getElementById('next-btn').style.display = 'block'; }, 4000);
+                setInterval(spawnPopHeart, 400);
+            }, 800);
+        }
+
+        function spawnPopHeart() {
+            const h = document.createElement('div');
+            h.className = 'pop-heart';
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.top = Math.random() * 100 + 'vh';
+            h.style.animation = `heartIn 2s forwards`;
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 2000);
+        }
+
+        function buildHeart() {
+            const pattern = [
+                [0,0,1,1,0,0,1,1,0,0], [0,1,1,1,1,1,1,1,1,0],
+                [1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1],
+                [0,1,1,1,1,1,1,1,1,0], [0,0,1,1,1,1,1,1,0,0],
+                [0,0,0,1,1,1,1,0,0,0], [0,0,0,0,1,1,0,0,0,0]
+            ];
+            const grid = document.getElementById('heartGrid');
+            pattern.forEach((row, rIdx) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                row.forEach((cell, cIdx) => {
+                    const h = document.createElement('span');
+                    h.className = 'mini-heart';
+                    h.innerHTML = '❤️';
+                    if (cell === 1) h.style.animation = `heartPop 0.4s ${0.5 + (rIdx * 0.1) + (cIdx * 0.05)}s forwards`;
+                    else h.style.visibility = 'hidden';
+                    rowDiv.appendChild(h);
+                });
+                grid.appendChild(rowDiv);
+            });
+        }
+
+        // Confetti Logic
+        function createConfetti(e) {
+            const colors = ['#ff8fa3', '#d32f2f', '#ffffff', '#ffdae0', '#ffd700'];
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = (e.clientX || window.innerWidth/2) + 'px';
+                confetti.style.top = (e.clientY || window.innerHeight/2) + 'px';
+                
+                const destX = (Math.random() - 0.5) * 400;
+                const destY = (Math.random() - 0.5) * 400;
+                
+                document.body.appendChild(confetti);
+                
+                const animation = confetti.animate([
+                    { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+                    { transform: `translate(${destX}px, ${destY}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 1000,
+                    easing: 'cubic-bezier(0, .9, .57, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+
+        function showFinalMessage() {
+            createConfetti({ clientX: window.innerWidth/2, clientY: window.innerHeight/2 });
+            document.getElementById('main-page').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('main-page').style.display = 'none';
+                document.getElementById('final-page').style.display = 'flex';
+                document.getElementById('paper').classList.add('burn-in');
+                // Repeated bursts for effect
+                setTimeout(() => createConfetti({ clientX: window.innerWidth/4, clientY: window.innerHeight/2 }), 500);
+                setTimeout(() => createConfetti({ clientX: 3*window.innerWidth/4, clientY: window.innerHeight/2 }), 800);
+            }, 500);
+        }
+
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes heartPop { to { opacity: 1; transform: scale(1); } }`;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
